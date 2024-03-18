@@ -1,0 +1,15 @@
+1	{% extends 'eduprod/layout.html' %}
+2	
+3	{% block content %}
+4	    <h2>
+5	        All Cards
+6	    </h2>
+7	    {% for card in card_list %}
+8	        <h3>🗃️ {{ card.box }} Box</h3>
+9	        <article>
+10	            {{ card }}
+11	        </article>
+12	    {% endfor %}
+13	{% endblock %}
+
+<!--This html renders a list of cards, displaying each card's box number and content. It inherits the layout and styling from the layout.html template. -->

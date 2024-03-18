@@ -1,13 +1,24 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <title>Q&A</title>
-    <link href="{% static 'eduprod/styles.css' %}" rel="stylesheet">
-    <script src="{% static 'eduprod/scripts.js' %}" defer></script>
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css"> <!-- This is a external css stylesheet which I used for simplictiy and ease -->
 </head>
+
 <body>
-    {% block body %}
-    {% endblock %}
+    <header>
+        <h1>Flashcards App</h1>
+    </header>
+    <main>
+        {% block content %}
+            <h2>Welcome to your Flashcards app!</h2>
+        {% endblock content %}
+    </main>
 </body>
+
 </html>
+<!-- This HTML code sets up the basic structure of a web page for a Flashcards app, 
+    including loading external CSS stylesheets and defining the main content area. -->
