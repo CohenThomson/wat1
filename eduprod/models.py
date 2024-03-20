@@ -14,5 +14,5 @@ class Card(models.Model):
 
     def __str__(self):
         return self.question
-#This code provides the data structure for storing flashcards in the web app's database. 
+#his code provides the data structure for storing flashcards in the web app's database. 
 #Each Card instance represents a single flashcard with a question, answer, box number, and creation date.

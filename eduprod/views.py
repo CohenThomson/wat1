@@ -1,16 +1,18 @@
-from django.core import serializers
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Card
+from .forms import CardForm
+from django.contrib.auth.decorators import login_required
 
-from django.views.generic import (
-    ListView,
-)
+@login_required
+def index(request):
+    return render(request, "eduprod/index.html")
 
-from .models import Card
-
-class CardListView(ListView):
-    model = Card
-    queryset = Card.objects.all().order_by("box", "-date_created")
-
-#this code sets up a view (CardListView) that will render a list of Card objects from the database, ordered first by the "box" attribute and then by the "date_created" attribute. 
-#This view can be used to display a list of flashcards or any other content associated with the Card model.
+def create_card(request):
+    if request.method == "POST":
+        form = CardForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("eduprod:index") #send where urls.py?
+    else:
+        form = CardForm()
+    return render(request, "eduprod/create_card.html", {"form": form})
