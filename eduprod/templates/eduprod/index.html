@@ -1,6 +1,19 @@
 {% extends "eduprod/layout.html" %}
 {% block body %}
-        <h2>Welcome to your Flashcards app!</h2>
-        <a href="{% url 'create_card' %}" class="button">Create Flashcard</a>
+    <h2>Welcome to your Flashcards app!</h2>
+    {% if has_subjects %}
+        <h3>Your Subjects:</h3>
+        <ul>
+            {% for subject in subjects %}
+                <li>{{ subject.name }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'eduprod:create_subject' %}" class="button">Create a new subject</a>
+        <a href="{% url 'eduprod:study_subjects' %}" class="button">Where you need to study</a>
+    {% else %}
+        <p>You have no subjects yet.</p>
+        <a href="{% url 'eduprod:create_subject' %}" class="button">Create a new subject</a>
+    {% endif %}
 {% endblock body %}
+
 
