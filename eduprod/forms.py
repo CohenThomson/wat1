@@ -1,14 +1,7 @@
 from django import forms
-from .models import Flashcard, Subject
 
-class SubjectForm(forms.ModelForm):
-    class Meta:
-        model = Subject
-        fields = ['name'] 
-
-class CardForm(forms.ModelForm):
-    class Meta:
-        model = Flashcard  # Change from Card to Flashcard
-        fields = ['question', 'answer', 'image']  # Include the 'image' field if needed
-
-        #add images maybe
+class CardForm(forms.Form):
+    question = forms.CharField(label='question', max_length=255, default='')
+    answer = forms.CharField(label='answer', max_length=255, default='')
+    image = forms.ImageField(label='image', upload_to='flashcard_images', blank=True, null=True)
+    subject = forms.CharField(label='subject', max_length=255, default='')   

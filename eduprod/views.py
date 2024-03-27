@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Subject, Flashcard
-from .forms import CardForm, SubjectForm
+from .models import Flashcard
+from .forms import CardForm
+
 
 @login_required
 def index(request):
