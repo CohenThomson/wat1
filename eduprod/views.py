@@ -1,71 +1,52 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Flashcard
-from .forms import CardForm
+import random
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
+from .models import Card
+from .forms import CardCheckForm
 
+class CardListView(ListView):
+    model = Card
+    queryset = Card.objects.all().order_by("box", "-date_created")
+    template_name = "eduprod/card_list.html"
 
-@login_required
-def index(request):
-    if request.method == "POST":
-        form = SubjectForm(request.POST)
-        if form.is_valid():
-            subject = form.save(commit=False)
-            subject.user = request.user
-            subject.save()
-            return redirect("index")
-    else:
-        form = SubjectForm()
-    
-    subjects = Subject.objects.filter(user=request.user)
-    context = {
-        'subjects': subjects,
-        'form': form,
-    }
-    return render(request, "eduprod/index.html", context)
+class CardCreateView(CreateView):
+    model = Card
+    fields = ["question", "answer", "box"]
+    template_name = "eduprod/card_form.html"
+    success_url = reverse_lazy("eduprod:card-list")
 
-@login_required
-def create_subject(request):
-    if request.method == "POST":
-        form = SubjectForm(request.POST)
-        if form.is_valid():
-            subject = form.save(commit=False)
-            subject.user = request.user
-            subject.save()
-            return redirect("eduprod:index")
-    else:
-        form = SubjectForm()
-    return render(request, "eduprod/create_subject.html", {"form": form})
+class CardUpdateView(UpdateView):
+    model = Card
+    fields = ["question", "answer", "box"]
+    template_name = "eduprod/card_form.html"
+    success_url = reverse_lazy("eduprod:card-list")
 
-@login_required
-def study_subject(request, subject_id):
-    subject = Subject.objects.get(pk=subject_id)
-    flashcards = Flashcard.objects.filter(subject=subject, user=request.user)
-    
-    # Handle user responses
-    if request.method == 'POST':
-        flashcard_id = request.POST.get('flashcard_id')
-        flashcard = Flashcard.objects.get(pk=flashcard_id)
-        user_response = request.POST.get('user_response')  # 'correct' or 'incorrect'
-        
-        if user_response == 'correct':
-            flashcard.correct_count += 1
-        elif user_response == 'incorrect':
-            flashcard.incorrect_count += 1
-        flashcard.save()
-    
-    context = {"subject": subject, "flashcards": flashcards}
-    return render(request, "eduprod/study_subject.html", context)
+class CardDeleteView(DeleteView):
+    model = Card
+    success_url = reverse_lazy("eduprod:card-list")
 
+class BoxView(ListView):
+    model = Card
+    template_name = "eduprod/box.html"
+    form_class = CardCheckForm
 
-@login_required
-def create_card(request):
-    if request.method == "POST":
-        form = CardForm(request.POST, request.FILES)
-        if form.is_valid():
-            flashcard = form.save(commit=False)
-            flashcard.user = request.user
-            flashcard.save()
-            return redirect("eduprod:index")  # Redirect to the appropriate page
-    else:
-        form = CardForm()
-    return render(request, "eduprod/create_card.html", {"form": form})
+    def get_queryset(self):
+        return Card.objects.filter(box=self.kwargs["box_num"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["box_number"] = self.kwargs["box_num"]
+        if self.object_list:
+            context["check_card"] = random.choice(self.object_list)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        return redirect(request.META.get("HTTP_REFERER"))

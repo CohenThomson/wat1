@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Flashcard
+from .models import Card
 
-admin.site.register(Flashcard)
+#admin.site.register(Card)
