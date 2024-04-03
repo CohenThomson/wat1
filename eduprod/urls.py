@@ -10,3 +10,5 @@ urlpatterns = [
     path('delete/<int:pk>/', views.CardDeleteView.as_view(), name='card-delete'),
     path("box/<int:box_num>", views.BoxView.as_view(), name="box"), 
 ]
+
+#this code sets up URL patterns for the 'eduprod' app, directing different URLs to specific views for handling various actions related to managing flashcards.

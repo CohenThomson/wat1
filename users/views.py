@@ -5,14 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserForm
-from django.contrib.auth.models import User 
 from users.models import UserProfile
-
 
 def index(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("users:login"))
     return render(request, "users/user.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -34,7 +33,6 @@ def logout_view(request):
 
 @login_required
 def create_user(request):
-    
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -43,14 +41,13 @@ def create_user(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            user = User.objects.create_user(username=email, email=email, password=password, first_name=firstname, last_name=surname)
+            user = UserProfile.objects.create_user(username=email, email=email, password=password, first_name=firstname, last_name=surname)
                    
             UserProfile.objects.create(
                 user=user,
                 firstname=firstname,  
                 surname=surname,  
                 email=email,  
-                
             )
             
             return redirect('users:index')
